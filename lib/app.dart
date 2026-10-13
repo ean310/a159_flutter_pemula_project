@@ -7,9 +7,28 @@ class SubmissionApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Pemula Project',
+      title: 'Google Offices',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF1A73E8),
+          primary: const Color(0xFF1A73E8),
+          surface: Colors.white,
+        ),
+        scaffoldBackgroundColor: const Color(0xFFF8F9FD),
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          elevation: 0,
+          scrolledUnderElevation: 1,
+          backgroundColor: Colors.white,
+          foregroundColor: Color(0xFF202124),
+          titleTextStyle: TextStyle(
+            color: Color(0xFF202124),
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.2,
+          ),
+        ),
       ),
       debugShowCheckedModeBanner: false,
       home: const HomePage(),
