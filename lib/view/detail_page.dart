@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../model/google_office.dart';
 
@@ -55,7 +56,7 @@ class DetailPage extends StatelessWidget {
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            if (constraints.maxWidth <= 750) {
+            if (constraints.maxWidth <= 700) {
               return _buildMobileDetail(context);
             } else {
               return _buildWebDetail(context);
@@ -146,33 +147,45 @@ class DetailPage extends StatelessWidget {
   }
 
   Widget _buildHeroImage({required double height, double borderRadius = 0}) {
-    return Hero(
-      tag: 'office-image-${googleOffice.id}',
-      child: ClipRRect(
+    return Container(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
-        child: Image.network(
-          googleOffice.image,
-          height: height,
-          width: double.infinity,
-          fit: BoxFit.cover,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Container(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Hero(
+        tag: 'office-image-${googleOffice.id}',
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(borderRadius),
+          child: Image.network(
+            googleOffice.image,
+            height: height,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Container(
+                height: height,
+                color: Colors.grey.shade200,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    color: Color(0xFF1A73E8),
+                  ),
+                ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) => Container(
               height: height,
               color: Colors.grey.shade200,
               child: const Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.5,
-                  color: Color(0xFF1A73E8),
-                ),
+                child: Icon(Icons.business, size: 64, color: Colors.grey),
               ),
-            );
-          },
-          errorBuilder: (context, error, stackTrace) => Container(
-            height: height,
-            color: Colors.grey.shade200,
-            child: const Center(
-              child: Icon(Icons.business, size: 64, color: Colors.grey),
             ),
           ),
         ),
@@ -232,10 +245,10 @@ class DetailPage extends StatelessWidget {
         const SizedBox(height: 10),
         Text(
           googleOffice.name,
-          style: const TextStyle(
+          style: GoogleFonts.poppins(
             fontSize: 26,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF202124),
+            color: const Color(0xFF202124),
             letterSpacing: -0.5,
           ),
         ),

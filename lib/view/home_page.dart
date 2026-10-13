@@ -11,17 +11,32 @@ class HomePage extends StatefulWidget {
 
   void navigateToDetailPage(
     BuildContext context, [
-    GoogleOffice? googleOffice,
-    String? googleOfficeId,
+    dynamic officeOrId,
   ]) {
     // TODO 3: edit this function to navigate to DetailPage
+    final String officeId = officeOrId is GoogleOffice
+        ? officeOrId.id
+        : (officeOrId as String? ?? listOfGoogleOffice.first.id);
+
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => DetailPage(
-          googleOffice: googleOffice,
-          googleOfficeId: googleOfficeId,
-        ),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return DetailPage(googleOfficeId: officeId);
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 1.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          final tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
       ),
     );
   }
@@ -52,8 +67,7 @@ class _HomePageState extends State<HomePage> {
       final query = _searchQuery.toLowerCase();
       final matchesSearch = query.isEmpty ||
           office.name.toLowerCase().contains(query) ||
-          office.address.toLowerCase().contains(query) ||
-          office.region.toLowerCase().contains(query);
+          office.address.toLowerCase().contains(query);
 
       final matchesRegion =
           _selectedRegion == 'all' || office.region == _selectedRegion;
@@ -126,10 +140,10 @@ class _HomePageState extends State<HomePage> {
                     return _buildEmptyState();
                   }
 
-                  if (constraints.maxWidth <= 600) {
-                    return _buildListView(offices);
-                  } else {
+                  if (constraints.maxWidth > 700) {
                     return _buildGridView(offices, constraints.maxWidth);
+                  } else {
+                    return _buildListView(offices);
                   }
                 },
               ),
@@ -276,7 +290,7 @@ class _HomePageState extends State<HomePage> {
             borderRadius: BorderRadius.circular(16),
             child: InkWell(
               borderRadius: BorderRadius.circular(16),
-              onTap: () => widget.navigateToDetailPage(context, office),
+              onTap: () => widget.navigateToDetailPage(context, office.id),
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Row(
@@ -408,7 +422,7 @@ class _HomePageState extends State<HomePage> {
             borderRadius: BorderRadius.circular(16),
             child: InkWell(
               borderRadius: BorderRadius.circular(16),
-              onTap: () => widget.navigateToDetailPage(context, office),
+              onTap: () => widget.navigateToDetailPage(context, office.id),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
